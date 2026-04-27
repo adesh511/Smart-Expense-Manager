@@ -1,0 +1,8 @@
+.git
+.gitignore
+.idea
+.mvn
+target
+Dockerfile
+README.md
+*.iml
