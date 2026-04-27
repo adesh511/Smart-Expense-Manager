@@ -7,13 +7,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "expenses")
+@Table(name = "recurring_expenses")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Expense {
+public class RecurringExpense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,19 +23,23 @@ public class Expense {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false, precision = 14, scale = 2)
-    private BigDecimal amount;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(nullable = false, precision = 14, scale = 2)
+    private BigDecimal amount;
 
     @Column(length = 2000)
     private String description;
 
-    @Column(name = "recurring_template_id")
-    private Long recurringTemplateId;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private RecurrenceFrequency frequency;
+
+    @Column(nullable = false)
+    private LocalDate nextRunDate;
+
+    @Column(nullable = false)
+    private boolean active;
 }

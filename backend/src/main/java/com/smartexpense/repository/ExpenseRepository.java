@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     Optional<Expense> findByIdAndUserId(Long id, Long userId);
+    boolean existsByUserIdAndRecurringTemplateIdAndDate(Long userId, Long recurringTemplateId, LocalDate date);
 
     @Query("""
             SELECT e FROM Expense e
