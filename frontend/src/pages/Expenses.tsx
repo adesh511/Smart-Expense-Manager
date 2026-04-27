@@ -22,6 +22,14 @@ export function Expenses() {
   const [cat, setCat] = useState<number | ''>('')
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [description, setDescription] = useState('')
+  const [recurring, setRecurring] = useState(false)
+  const [frequency, setFrequency] = useState<'DAILY' | 'WEEKLY' | 'MONTHLY'>(
+    'MONTHLY',
+  )
+  const [nextRunDate, setNextRunDate] = useState(
+    () => new Date().toISOString().slice(0, 10),
+  )
+  const [active, setActive] = useState(true)
 
   const [editingId, setEditingId] = useState<number | null>(null)
 
@@ -71,9 +79,17 @@ export function Expenses() {
         categoryId: cat,
         date,
         description: description || undefined,
+        recurring,
+        frequency: recurring ? frequency : undefined,
+        nextRunDate: recurring ? nextRunDate : undefined,
+        active: recurring ? active : undefined,
       })
       setAmount('')
       setDescription('')
+      setRecurring(false)
+      setFrequency('MONTHLY')
+      setNextRunDate(new Date().toISOString().slice(0, 10))
+      setActive(true)
       await reload(0)
     } catch (err: unknown) {
       const msg =
@@ -180,6 +196,47 @@ export function Expenses() {
               maxLength={2000}
             />
           </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={recurring}
+              onChange={(e) => setRecurring(e.target.checked)}
+            />{' '}
+            Recurring
+          </label>
+          {recurring && (
+            <>
+              <label>
+                Frequency
+                <select
+                  value={frequency}
+                  onChange={(e) =>
+                    setFrequency(e.target.value as 'DAILY' | 'WEEKLY' | 'MONTHLY')
+                  }
+                >
+                  <option value="DAILY">Daily</option>
+                  <option value="WEEKLY">Weekly</option>
+                  <option value="MONTHLY">Monthly</option>
+                </select>
+              </label>
+              <label>
+                Next run date
+                <input
+                  type="date"
+                  value={nextRunDate}
+                  onChange={(e) => setNextRunDate(e.target.value)}
+                />
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={active}
+                  onChange={(e) => setActive(e.target.checked)}
+                />{' '}
+                Active
+              </label>
+            </>
+          )}
           <button type="submit" className="btn primary">
             Add
           </button>
@@ -295,7 +352,12 @@ export function Expenses() {
                   <td>{row.date}</td>
                   <td>{row.categoryName}</td>
                   <td>{Number(row.amount).toFixed(2)}</td>
-                  <td>{row.description}</td>
+                  <td>
+                    {row.description}
+                    {row.recurringTemplateId && (
+                      <span className="muted small"> (recurring)</span>
+                    )}
+                  </td>
                   <td className="actions">
                     <button
                       type="button"

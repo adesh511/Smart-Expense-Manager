@@ -21,6 +21,7 @@ export type Expense = {
   categoryName: string
   date: string
   description?: string | null
+  recurringTemplateId?: number | null
 }
 
 export type PageResponse<T> = {

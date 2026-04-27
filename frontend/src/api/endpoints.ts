@@ -52,6 +52,10 @@ export async function createExpense(payload: {
   categoryId: number
   date: string
   description?: string
+  recurring?: boolean
+  frequency?: 'DAILY' | 'WEEKLY' | 'MONTHLY'
+  nextRunDate?: string
+  active?: boolean
 }): Promise<Expense> {
   const { data } = await api.post<Expense>('/api/expenses', payload)
   return data

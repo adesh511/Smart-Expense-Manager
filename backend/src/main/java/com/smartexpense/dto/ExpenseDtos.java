@@ -23,6 +23,10 @@ public class ExpenseDtos {
         private LocalDate date;
         @Size(max = 2000)
         private String description;
+        private boolean recurring;
+        private String frequency;
+        private LocalDate nextRunDate;
+        private Boolean active;
     }
 
     @Data
@@ -36,5 +40,6 @@ public class ExpenseDtos {
         private String categoryName;
         private LocalDate date;
         private String description;
+        private Long recurringTemplateId;
     }
 }
